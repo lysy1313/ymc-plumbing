@@ -45,8 +45,12 @@ export function JobCard({ job, onChangeStatus, isUpdating }: JobCardProps) {
     [JOB_STATUSES.LOST_CANCELLED]: "bg-red-50 text-red-700 border-red-200",
   };
 
+  const isFinished =
+    job.status === JOB_STATUSES.COMPLETED ||
+    job.status === JOB_STATUSES.LOST_CANCELLED;
+
   return (
-    <Card>
+    <Card className={isFinished ? "opacity-50" : ""}>
       <div className="mb-4 flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -69,16 +73,22 @@ export function JobCard({ job, onChangeStatus, isUpdating }: JobCardProps) {
         </span>
       </div>
 
-      <div className="mb-4 grid gap-2 text-sm text-slate-700 md:grid-cols-2">
+      <div className="grid gap-3 text-sm text-slate-700 md:grid-cols-3 my-2">
         <p>
-          <strong>Phone:</strong> {job.phone}
+          <span className="block text-xs text-slate-500">Phone</span>
+          <strong>{job.phone}</strong>
         </p>
+
         <p>
-          <strong>Technician:</strong> {job.technician}
+          <span className="block text-xs text-slate-500">Technician</span>
+          <strong>{job.technician}</strong>
         </p>
+
         <p>
-          <strong>Scheduled:</strong> {job.startDate}, {job.startTime} -{" "}
-          {job.endTime}
+          <span className="block text-xs text-slate-500">Scheduled</span>
+          <strong>
+            {job.startDate}, {job.startTime} - {job.endTime}
+          </strong>
         </p>
       </div>
 
