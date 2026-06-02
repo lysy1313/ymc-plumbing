@@ -1,4 +1,6 @@
-export const mockLeads = [
+import { Lead } from "../types/lead.types";
+
+export const mockLeads: Lead[] = [
   {
     id: "lead_001",
     firstName: "John",

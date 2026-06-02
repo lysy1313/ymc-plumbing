@@ -1,19 +1,6 @@
 import { Button } from "@/shared/components/Button";
 import { Card } from "@/shared/components/Card";
-
-type Lead = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email: string;
-  source: string;
-  issue: string;
-  address: string;
-  city: string;
-  zipCode: string;
-  area: string;
-};
+import { Lead } from "../types/lead.types";
 
 type LeadCardProps = {
   lead: Lead;

@@ -16,20 +16,7 @@ import { Card } from "@/shared/components/Card";
 import { Input } from "@/shared/components/Input";
 import { Select } from "@/shared/components/Select";
 import { Textarea } from "@/shared/components/Textarea";
-
-type Lead = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email: string;
-  source: string;
-  issue: string;
-  address: string;
-  city: string;
-  zipCode: string;
-  area: string;
-};
+import { Lead } from "@/features/leads/types/lead.types";
 
 type CreateJobFormProps = {
   lead: Lead;
@@ -55,7 +42,7 @@ export function CreateJobForm({
       lastName: lead.lastName,
       phone: lead.phone,
       email: lead.email,
-      jobSource: lead.source as CreateJobFormValues["jobSource"],
+      jobSource: lead.source,
       description: lead.issue,
       address: lead.address,
       city: lead.city,
@@ -65,22 +52,30 @@ export function CreateJobForm({
   });
 
   async function onSubmit(values: CreateJobFormValues) {
-    const response = await fetch("/api/jobs", {
-      method: "POST",
-      headers: {
-        "Content-Type": "lication/json",
-      },
-      body: JSON.stringify(values),
-    });
-
-    if (!response.ok) {
-      setError("root", {
-        message: "Failed to create job. Please try again.",
+    try {
+      const response = await fetch("/api/jobs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
       });
-      return;
-    }
 
-    onSuccess();
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        setError("root", {
+          message: data?.message ?? "Failed to create job. Please try again.",
+        });
+        return;
+      }
+
+      onSuccess();
+    } catch {
+      setError("root", {
+        message: "Network error. Please check the server and try again.",
+      });
+    }
   }
 
   return (

@@ -1,6 +1,9 @@
-import { prisma } from "@/server/db/prisma";
 import { createJobSchema } from "@/features/jobs/schemas/job.schema";
-import { JOB_STATUSES, type JobStatus } from "@/features/jobs/types/job.types";
+import {
+  JOB_STATUS_LABELS,
+  JOB_STATUSES,
+} from "@/features/jobs/types/job.types";
+import { prisma } from "@/server/db/prisma";
 import { z } from "zod";
 
 export async function getJobs() {
@@ -63,7 +66,7 @@ export async function updateJobStatus(jobId: string, input: unknown) {
         id: jobId,
       },
       data: {
-        status: data.status satisfies JobStatus,
+        status: data.status,
       },
     });
 
@@ -71,7 +74,9 @@ export async function updateJobStatus(jobId: string, input: unknown) {
       data: {
         jobId: job.id,
         type: "STATUS_CHANGED",
-        message: `Status changed — ${data.status}${data.note ? ` — ${data.note}` : ""}`,
+        message: `Status changed — ${JOB_STATUS_LABELS[data.status]}${
+          data.note ? ` — ${data.note}` : ""
+        }`,
         status: "SUCCESS",
       },
     });

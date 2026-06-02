@@ -1,5 +1,6 @@
 import {
   JOB_STATUS_LABELS,
+  JOB_STATUSES,
   type JobStatus,
 } from "@/features/jobs/types/job.types";
 import { StatusActions } from "./StatusActions";
@@ -36,6 +37,14 @@ type JobCardProps = {
 };
 
 export function JobCard({ job, onChangeStatus, isUpdating }: JobCardProps) {
+  const JOB_STATUS_BADGE_CLASSES: Record<JobStatus, string> = {
+    [JOB_STATUSES.JOB_CREATED]: "bg-sky-50 text-sky-700 border-sky-200",
+    [JOB_STATUSES.SCHEDULED]: "bg-indigo-50 text-indigo-700 border-indigo-200",
+    [JOB_STATUSES.IN_PROGRESS]: "bg-amber-50 text-amber-700 border-amber-200",
+    [JOB_STATUSES.COMPLETED]: "bg-green-50 text-green-700 border-green-200",
+    [JOB_STATUSES.LOST_CANCELLED]: "bg-red-50 text-red-700 border-red-200",
+  };
+
   return (
     <Card>
       <div className="mb-4 flex items-start justify-between gap-4">
@@ -51,7 +60,11 @@ export function JobCard({ job, onChangeStatus, isUpdating }: JobCardProps) {
           </p>
         </div>
 
-        <span className="rounded-full bg-cyan-50 px-3 py-1 text-xs font-semibold text-cyan-700">
+        <span
+          className={`rounded-full border px-3 py-1 text-xs font-semibold ${
+            JOB_STATUS_BADGE_CLASSES[job.status]
+          }`}
+        >
           {JOB_STATUS_LABELS[job.status]}
         </span>
       </div>

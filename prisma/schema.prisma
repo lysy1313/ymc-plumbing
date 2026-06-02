@@ -37,6 +37,10 @@ model Job {
   updatedAt DateTime @updatedAt
 
   events EventLog[]
+
+  @@index([leadId])
+  @@index([status])
+  @@index([createdAt])
 }
 
 model EventLog {
@@ -50,4 +54,7 @@ model EventLog {
   status  String @default("SUCCESS")
 
   createdAt DateTime @default(now())
+
+  @@index([jobId])
+  @@index([createdAt])
 }

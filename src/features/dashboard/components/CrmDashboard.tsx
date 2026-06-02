@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { mockLeads } from "@/features/leads/data/mockLeads";
-import { LeadCard } from "@/features/leads/components/LeadCard";
+import { EventLog } from "@/features/event-log/components/EventLog";
 import { CreateJobForm } from "@/features/jobs/components/CreateJobForm";
 import { JobCard } from "@/features/jobs/components/JobCard";
-import { EventLog } from "@/features/event-log/components/EventLog";
 import { type JobStatus } from "@/features/jobs/types/job.types";
-import { Button } from "@/shared/components/Button";
+import { LeadCard } from "@/features/leads/components/LeadCard";
+import { mockLeads } from "@/features/leads/data/mockLeads";
+import { Modal } from "@/shared/components/Modal";
+import { useEffect, useMemo, useState } from "react";
 
 type EventLogItem = {
   id: string;
@@ -38,44 +38,101 @@ export function CrmDashboard() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isLoadingJobs, setIsLoadingJobs] = useState(true);
   const [updatingJobId, setUpdatingJobId] = useState<string | null>(null);
+  const [jobsError, setJobsError] = useState<string | null>(null);
 
   const lead = mockLeads[0];
 
-  async function loadJobs() {
-    setIsLoadingJobs(true);
+  async function fetchJobsFromApi(): Promise<Job[]> {
+    const response = await fetch("/api/jobs", {
+      cache: "no-store",
+    });
 
-    const response = await fetch("/api/jobs");
+    if (!response.ok) {
+      throw new Error("Failed to load jobs");
+    }
+
     const data = await response.json();
 
-    setJobs(data.jobs ?? []);
-    setIsLoadingJobs(false);
+    return data.jobs ?? [];
+  }
+
+  async function loadJobs() {
+    setIsLoadingJobs(true);
+    setJobsError(null);
+
+    try {
+      const nextJobs = await fetchJobsFromApi();
+      setJobs(nextJobs);
+    } catch {
+      setJobsError("Failed to load jobs. Please try again.");
+    } finally {
+      setIsLoadingJobs(false);
+    }
   }
 
   useEffect(() => {
-    loadJobs();
+    let isMounted = true;
+
+    async function loadInitialJobs() {
+      try {
+        const nextJobs = await fetchJobsFromApi();
+
+        if (isMounted) {
+          setJobs(nextJobs);
+        }
+      } catch {
+        if (isMounted) {
+          setJobsError("Failed to load jobs. Please try again.");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingJobs(false);
+        }
+      }
+    }
+
+    void loadInitialJobs();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   async function handleStatusChange(jobId: string, status: JobStatus) {
     setUpdatingJobId(jobId);
 
-    await fetch(`/api/jobs/${jobId}/status`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "lication/json",
-      },
-      body: JSON.stringify({ status }),
-    });
+    try {
+      const response = await fetch(`/api/jobs/${jobId}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status }),
+      });
 
-    await loadJobs();
-    setUpdatingJobId(null);
+      if (!response.ok) {
+        throw new Error("Failed to update job status");
+      }
+
+      await loadJobs();
+    } catch {
+      alert("Failed to update status. Please try again.");
+    } finally {
+      setUpdatingJobId(null);
+    }
   }
 
   const allEvents = useMemo(() => {
-    return jobs.flatMap((job) => job.events ?? []);
+    return jobs
+      .flatMap((job) => job.events ?? [])
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
   }, [jobs]);
 
   return (
-    <main className="min-h-screen bg-slate-100">
+    <main className="min-h-screen ">
       <section className="bg-slate-950 px-6 py-8 text-white">
         <div className="mx-auto max-w-6xl">
           <p className="text-sm font-semibold uppercase tracking-wide text-cyan-300">
@@ -96,37 +153,21 @@ export function CrmDashboard() {
         </div>
 
         <div className="space-y-6">
-          {isCreateOpen ? (
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="mb-5 flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="text-xl font-semibold text-slate-950">
-                    Create a job
-                  </h2>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Fill in client, job, location and schedule details.
-                  </p>
-                </div>
-
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={() => setIsCreateOpen(false)}
-                >
-                  Close
-                </Button>
-              </div>
-
-              <CreateJobForm
-                lead={lead}
-                onCancel={() => setIsCreateOpen(false)}
-                onSuccess={async () => {
-                  setIsCreateOpen(false);
-                  await loadJobs();
-                }}
-              />
-            </div>
-          ) : null}
+          <Modal
+            isOpen={isCreateOpen}
+            title="Create a job"
+            description="Fill in client, job, location and schedule details."
+            onClose={() => setIsCreateOpen(false)}
+          >
+            <CreateJobForm
+              lead={lead}
+              onCancel={() => setIsCreateOpen(false)}
+              onSuccess={async () => {
+                setIsCreateOpen(false);
+                await loadJobs();
+              }}
+            />
+          </Modal>
 
           <div>
             <div className="mb-4 flex items-center justify-between">
@@ -137,6 +178,12 @@ export function CrmDashboard() {
                 </p>
               </div>
             </div>
+
+            {jobsError ? (
+              <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+                {jobsError}
+              </div>
+            ) : null}
 
             {isLoadingJobs ? (
               <p className="text-sm text-slate-500">Loading jobs...</p>

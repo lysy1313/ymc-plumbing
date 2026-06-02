@@ -46,4 +46,3 @@ prisma/*.db-wal
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
