@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -10,4 +5,56 @@ generator client {
 
 datasource db {
   provider = "sqlite"
+}
+
+model Job {
+  id String @id @default(cuid())
+
+  leadId String
+
+  firstName String
+  lastName  String
+  phone     String
+  email     String?
+
+  jobType     String
+  jobSource   String
+  description String?
+
+  address String
+  city    String
+  zipCode String
+  area    String?
+
+  startDate  String
+  startTime  String
+  endTime    String
+  technician String
+
+  status String @default("JOB_CREATED")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  events EventLog[]
+
+  @@index([leadId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model EventLog {
+  id String @id @default(cuid())
+
+  jobId String?
+  job   Job?    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  type    String
+  message String
+  status  String @default("SUCCESS")
+
+  createdAt DateTime @default(now())
+
+  @@index([jobId])
+  @@index([createdAt])
 }
