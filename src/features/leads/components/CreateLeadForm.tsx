@@ -3,57 +3,41 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  createJobSchema,
-  type CreateJobFormValues,
-} from "@/features/jobs/schemas/job.schema";
-import {
-  JOB_SOURCES,
-  JOB_TYPES,
-  TECHNICIANS,
-} from "@/features/jobs/types/job.types";
+  createLeadSchema,
+  LEAD_SOURCES,
+  type CreateLeadFormValues,
+} from "@/features/leads/schemas/lead.schema";
 import { Button } from "@/shared/components/Button";
 import { Card } from "@/shared/components/Card";
 import { Input } from "@/shared/components/Input";
 import { Select } from "@/shared/components/Select";
 import { Textarea } from "@/shared/components/Textarea";
-import { Lead } from "@/features/leads/types/lead.types";
 
-type CreateJobFormProps = {
-  lead: Lead;
-  onSuccess: () => void;
-  onCancel: () => void;
+type Lead = CreateLeadFormValues & {
+  id: string;
 };
 
-export function CreateJobForm({
-  lead,
-  onSuccess,
-  onCancel,
-}: CreateJobFormProps) {
+type CreateLeadFormProps = {
+  onCancel: () => void;
+  onSuccess: (lead: Lead) => void;
+};
+
+export function CreateLeadForm({ onCancel, onSuccess }: CreateLeadFormProps) {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     setError,
-  } = useForm<CreateJobFormValues>({
-    resolver: zodResolver(createJobSchema),
+  } = useForm<CreateLeadFormValues>({
+    resolver: zodResolver(createLeadSchema),
     defaultValues: {
-      leadId: lead.id,
-      firstName: lead.firstName,
-      lastName: lead.lastName,
-      phone: lead.phone,
-      email: lead.email ?? "",
-      jobSource: lead.source as CreateJobFormValues["jobSource"],
-      description: lead.issue,
-      address: lead.address,
-      city: lead.city,
-      zipCode: lead.zipCode,
-      area: lead.area ?? "",
+      source: "Phone Call",
     },
   });
 
-  async function onSubmit(values: CreateJobFormValues) {
+  async function onSubmit(values: CreateLeadFormValues) {
     try {
-      const response = await fetch("/api/jobs", {
+      const response = await fetch("/api/leads", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,20 +45,19 @@ export function CreateJobForm({
         body: JSON.stringify(values),
       });
 
+      const data = await response.json().catch(() => null);
+
       if (!response.ok) {
-        const data = await response.json().catch(() => null);
-
         setError("root", {
-          message: data?.message ?? "Failed to create job. Please try again.",
+          message: data?.message ?? "Failed to create lead. Please try again.",
         });
-
         return;
       }
 
-      onSuccess();
+      onSuccess(data.lead);
     } catch {
       setError("root", {
-        message: "Network error. Please check the server and try again.",
+        message: "Network error. Please try again.",
       });
     }
   }
@@ -91,22 +74,26 @@ export function CreateJobForm({
         <h3 className="mb-4 text-lg font-semibold text-slate-950">
           Client details
         </h3>
+
         <div className="grid gap-4 md:grid-cols-2">
           <Input
             label="First name"
             error={errors.firstName?.message}
             {...register("firstName")}
           />
+
           <Input
             label="Last name"
             error={errors.lastName?.message}
             {...register("lastName")}
           />
+
           <Input
             label="Phone"
             error={errors.phone?.message}
             {...register("phone")}
           />
+
           <Input
             label="Email"
             error={errors.email?.message}
@@ -117,29 +104,24 @@ export function CreateJobForm({
 
       <Card>
         <h3 className="mb-4 text-lg font-semibold text-slate-950">
-          Job details
+          Lead details
         </h3>
+
         <div className="grid gap-4 md:grid-cols-2">
           <Select
-            label="Job type"
-            options={JOB_TYPES}
-            error={errors.jobType?.message}
-            {...register("jobType")}
-          />
-          <Select
-            label="Job source"
-            options={JOB_SOURCES}
-            error={errors.jobSource?.message}
-            {...register("jobSource")}
+            label="Source"
+            options={LEAD_SOURCES}
+            error={errors.source?.message}
+            {...register("source")}
           />
         </div>
 
         <div className="mt-4">
           <Textarea
-            label="Job description"
+            label="Issue"
             rows={4}
-            error={errors.description?.message}
-            {...register("description")}
+            error={errors.issue?.message}
+            {...register("issue")}
           />
         </div>
       </Card>
@@ -148,22 +130,26 @@ export function CreateJobForm({
         <h3 className="mb-4 text-lg font-semibold text-slate-950">
           Service location
         </h3>
+
         <div className="grid gap-4 md:grid-cols-2">
           <Input
             label="Address"
             error={errors.address?.message}
             {...register("address")}
           />
+
           <Input
             label="City"
             error={errors.city?.message}
             {...register("city")}
           />
+
           <Input
             label="Zip code"
             error={errors.zipCode?.message}
             {...register("zipCode")}
           />
+
           <Input
             label="Area"
             error={errors.area?.message}
@@ -172,42 +158,13 @@ export function CreateJobForm({
         </div>
       </Card>
 
-      <Card>
-        <h3 className="mb-4 text-lg font-semibold text-slate-950">Scheduled</h3>
-        <div className="grid gap-4 md:grid-cols-2">
-          <Input
-            label="Start date"
-            type="date"
-            error={errors.startDate?.message}
-            {...register("startDate")}
-          />
-          <Input
-            label="Start time"
-            type="time"
-            error={errors.startTime?.message}
-            {...register("startTime")}
-          />
-          <Input
-            label="End time"
-            type="time"
-            error={errors.endTime?.message}
-            {...register("endTime")}
-          />
-          <Select
-            label="Assigned technician"
-            options={TECHNICIANS}
-            error={errors.technician?.message}
-            {...register("technician")}
-          />
-        </div>
-      </Card>
-
       <div className="flex justify-end gap-3">
         <Button type="button" variant="secondary" onClick={onCancel}>
           Cancel
         </Button>
+
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Saving..." : "Save job"}
+          {isSubmitting ? "Saving..." : "Save lead"}
         </Button>
       </div>
     </form>

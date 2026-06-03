@@ -8,6 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/Lead'
 export type * from './models/Job'
 export type * from './models/EventLog'
 export type * from './commonInputTypes'

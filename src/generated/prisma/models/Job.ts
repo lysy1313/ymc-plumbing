@@ -303,6 +303,7 @@ export type JobWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Job"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Job"> | Date | string
   events?: Prisma.EventLogListRelationFilter
+  lead?: Prisma.XOR<Prisma.LeadScalarRelationFilter, Prisma.LeadWhereInput>
 }
 
 export type JobOrderByWithRelationInput = {
@@ -327,6 +328,7 @@ export type JobOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   events?: Prisma.EventLogOrderByRelationAggregateInput
+  lead?: Prisma.LeadOrderByWithRelationInput
 }
 
 export type JobWhereUniqueInput = Prisma.AtLeast<{
@@ -354,6 +356,7 @@ export type JobWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Job"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Job"> | Date | string
   events?: Prisma.EventLogListRelationFilter
+  lead?: Prisma.XOR<Prisma.LeadScalarRelationFilter, Prisma.LeadWhereInput>
 }, "id">
 
 export type JobOrderByWithAggregationInput = {
@@ -410,7 +413,6 @@ export type JobScalarWhereWithAggregatesInput = {
 
 export type JobCreateInput = {
   id?: string
-  leadId: string
   firstName: string
   lastName: string
   phone: string
@@ -430,6 +432,7 @@ export type JobCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventLogCreateNestedManyWithoutJobInput
+  lead: Prisma.LeadCreateNestedOneWithoutJobsInput
 }
 
 export type JobUncheckedCreateInput = {
@@ -458,7 +461,6 @@ export type JobUncheckedCreateInput = {
 
 export type JobUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  leadId?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
@@ -478,6 +480,7 @@ export type JobUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventLogUpdateManyWithoutJobNestedInput
+  lead?: Prisma.LeadUpdateOneRequiredWithoutJobsNestedInput
 }
 
 export type JobUncheckedUpdateInput = {
@@ -529,7 +532,6 @@ export type JobCreateManyInput = {
 
 export type JobUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  leadId?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
@@ -571,6 +573,16 @@ export type JobUncheckedUpdateManyInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type JobListRelationFilter = {
+  every?: Prisma.JobWhereInput
+  some?: Prisma.JobWhereInput
+  none?: Prisma.JobWhereInput
+}
+
+export type JobOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type JobCountOrderByAggregateInput = {
@@ -647,16 +659,46 @@ export type JobNullableScalarRelationFilter = {
   isNot?: Prisma.JobWhereInput | null
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
+export type JobCreateNestedManyWithoutLeadInput = {
+  create?: Prisma.XOR<Prisma.JobCreateWithoutLeadInput, Prisma.JobUncheckedCreateWithoutLeadInput> | Prisma.JobCreateWithoutLeadInput[] | Prisma.JobUncheckedCreateWithoutLeadInput[]
+  connectOrCreate?: Prisma.JobCreateOrConnectWithoutLeadInput | Prisma.JobCreateOrConnectWithoutLeadInput[]
+  createMany?: Prisma.JobCreateManyLeadInputEnvelope
+  connect?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
+export type JobUncheckedCreateNestedManyWithoutLeadInput = {
+  create?: Prisma.XOR<Prisma.JobCreateWithoutLeadInput, Prisma.JobUncheckedCreateWithoutLeadInput> | Prisma.JobCreateWithoutLeadInput[] | Prisma.JobUncheckedCreateWithoutLeadInput[]
+  connectOrCreate?: Prisma.JobCreateOrConnectWithoutLeadInput | Prisma.JobCreateOrConnectWithoutLeadInput[]
+  createMany?: Prisma.JobCreateManyLeadInputEnvelope
+  connect?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
 }
 
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
+export type JobUpdateManyWithoutLeadNestedInput = {
+  create?: Prisma.XOR<Prisma.JobCreateWithoutLeadInput, Prisma.JobUncheckedCreateWithoutLeadInput> | Prisma.JobCreateWithoutLeadInput[] | Prisma.JobUncheckedCreateWithoutLeadInput[]
+  connectOrCreate?: Prisma.JobCreateOrConnectWithoutLeadInput | Prisma.JobCreateOrConnectWithoutLeadInput[]
+  upsert?: Prisma.JobUpsertWithWhereUniqueWithoutLeadInput | Prisma.JobUpsertWithWhereUniqueWithoutLeadInput[]
+  createMany?: Prisma.JobCreateManyLeadInputEnvelope
+  set?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+  disconnect?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+  delete?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+  connect?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+  update?: Prisma.JobUpdateWithWhereUniqueWithoutLeadInput | Prisma.JobUpdateWithWhereUniqueWithoutLeadInput[]
+  updateMany?: Prisma.JobUpdateManyWithWhereWithoutLeadInput | Prisma.JobUpdateManyWithWhereWithoutLeadInput[]
+  deleteMany?: Prisma.JobScalarWhereInput | Prisma.JobScalarWhereInput[]
+}
+
+export type JobUncheckedUpdateManyWithoutLeadNestedInput = {
+  create?: Prisma.XOR<Prisma.JobCreateWithoutLeadInput, Prisma.JobUncheckedCreateWithoutLeadInput> | Prisma.JobCreateWithoutLeadInput[] | Prisma.JobUncheckedCreateWithoutLeadInput[]
+  connectOrCreate?: Prisma.JobCreateOrConnectWithoutLeadInput | Prisma.JobCreateOrConnectWithoutLeadInput[]
+  upsert?: Prisma.JobUpsertWithWhereUniqueWithoutLeadInput | Prisma.JobUpsertWithWhereUniqueWithoutLeadInput[]
+  createMany?: Prisma.JobCreateManyLeadInputEnvelope
+  set?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+  disconnect?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+  delete?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+  connect?: Prisma.JobWhereUniqueInput | Prisma.JobWhereUniqueInput[]
+  update?: Prisma.JobUpdateWithWhereUniqueWithoutLeadInput | Prisma.JobUpdateWithWhereUniqueWithoutLeadInput[]
+  updateMany?: Prisma.JobUpdateManyWithWhereWithoutLeadInput | Prisma.JobUpdateManyWithWhereWithoutLeadInput[]
+  deleteMany?: Prisma.JobScalarWhereInput | Prisma.JobScalarWhereInput[]
 }
 
 export type JobCreateNestedOneWithoutEventsInput = {
@@ -675,9 +717,8 @@ export type JobUpdateOneWithoutEventsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.JobUpdateToOneWithWhereWithoutEventsInput, Prisma.JobUpdateWithoutEventsInput>, Prisma.JobUncheckedUpdateWithoutEventsInput>
 }
 
-export type JobCreateWithoutEventsInput = {
+export type JobCreateWithoutLeadInput = {
   id?: string
-  leadId: string
   firstName: string
   lastName: string
   phone: string
@@ -696,6 +737,105 @@ export type JobCreateWithoutEventsInput = {
   status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  events?: Prisma.EventLogCreateNestedManyWithoutJobInput
+}
+
+export type JobUncheckedCreateWithoutLeadInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  phone: string
+  email?: string | null
+  jobType: string
+  jobSource: string
+  description?: string | null
+  address: string
+  city: string
+  zipCode: string
+  area?: string | null
+  startDate: string
+  startTime: string
+  endTime: string
+  technician: string
+  status?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventLogUncheckedCreateNestedManyWithoutJobInput
+}
+
+export type JobCreateOrConnectWithoutLeadInput = {
+  where: Prisma.JobWhereUniqueInput
+  create: Prisma.XOR<Prisma.JobCreateWithoutLeadInput, Prisma.JobUncheckedCreateWithoutLeadInput>
+}
+
+export type JobCreateManyLeadInputEnvelope = {
+  data: Prisma.JobCreateManyLeadInput | Prisma.JobCreateManyLeadInput[]
+  skipDuplicates?: boolean
+}
+
+export type JobUpsertWithWhereUniqueWithoutLeadInput = {
+  where: Prisma.JobWhereUniqueInput
+  update: Prisma.XOR<Prisma.JobUpdateWithoutLeadInput, Prisma.JobUncheckedUpdateWithoutLeadInput>
+  create: Prisma.XOR<Prisma.JobCreateWithoutLeadInput, Prisma.JobUncheckedCreateWithoutLeadInput>
+}
+
+export type JobUpdateWithWhereUniqueWithoutLeadInput = {
+  where: Prisma.JobWhereUniqueInput
+  data: Prisma.XOR<Prisma.JobUpdateWithoutLeadInput, Prisma.JobUncheckedUpdateWithoutLeadInput>
+}
+
+export type JobUpdateManyWithWhereWithoutLeadInput = {
+  where: Prisma.JobScalarWhereInput
+  data: Prisma.XOR<Prisma.JobUpdateManyMutationInput, Prisma.JobUncheckedUpdateManyWithoutLeadInput>
+}
+
+export type JobScalarWhereInput = {
+  AND?: Prisma.JobScalarWhereInput | Prisma.JobScalarWhereInput[]
+  OR?: Prisma.JobScalarWhereInput[]
+  NOT?: Prisma.JobScalarWhereInput | Prisma.JobScalarWhereInput[]
+  id?: Prisma.StringFilter<"Job"> | string
+  leadId?: Prisma.StringFilter<"Job"> | string
+  firstName?: Prisma.StringFilter<"Job"> | string
+  lastName?: Prisma.StringFilter<"Job"> | string
+  phone?: Prisma.StringFilter<"Job"> | string
+  email?: Prisma.StringNullableFilter<"Job"> | string | null
+  jobType?: Prisma.StringFilter<"Job"> | string
+  jobSource?: Prisma.StringFilter<"Job"> | string
+  description?: Prisma.StringNullableFilter<"Job"> | string | null
+  address?: Prisma.StringFilter<"Job"> | string
+  city?: Prisma.StringFilter<"Job"> | string
+  zipCode?: Prisma.StringFilter<"Job"> | string
+  area?: Prisma.StringNullableFilter<"Job"> | string | null
+  startDate?: Prisma.StringFilter<"Job"> | string
+  startTime?: Prisma.StringFilter<"Job"> | string
+  endTime?: Prisma.StringFilter<"Job"> | string
+  technician?: Prisma.StringFilter<"Job"> | string
+  status?: Prisma.StringFilter<"Job"> | string
+  createdAt?: Prisma.DateTimeFilter<"Job"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Job"> | Date | string
+}
+
+export type JobCreateWithoutEventsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  phone: string
+  email?: string | null
+  jobType: string
+  jobSource: string
+  description?: string | null
+  address: string
+  city: string
+  zipCode: string
+  area?: string | null
+  startDate: string
+  startTime: string
+  endTime: string
+  technician: string
+  status?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lead: Prisma.LeadCreateNestedOneWithoutJobsInput
 }
 
 export type JobUncheckedCreateWithoutEventsInput = {
@@ -739,6 +879,29 @@ export type JobUpdateToOneWithWhereWithoutEventsInput = {
 
 export type JobUpdateWithoutEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobType?: Prisma.StringFieldUpdateOperationsInput | string
+  jobSource?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  zipCode?: Prisma.StringFieldUpdateOperationsInput | string
+  area?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.StringFieldUpdateOperationsInput | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  technician?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lead?: Prisma.LeadUpdateOneRequiredWithoutJobsNestedInput
+}
+
+export type JobUncheckedUpdateWithoutEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   leadId?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -760,9 +923,76 @@ export type JobUpdateWithoutEventsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type JobUncheckedUpdateWithoutEventsInput = {
+export type JobCreateManyLeadInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  phone: string
+  email?: string | null
+  jobType: string
+  jobSource: string
+  description?: string | null
+  address: string
+  city: string
+  zipCode: string
+  area?: string | null
+  startDate: string
+  startTime: string
+  endTime: string
+  technician: string
+  status?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type JobUpdateWithoutLeadInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  leadId?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobType?: Prisma.StringFieldUpdateOperationsInput | string
+  jobSource?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  zipCode?: Prisma.StringFieldUpdateOperationsInput | string
+  area?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.StringFieldUpdateOperationsInput | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  technician?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventLogUpdateManyWithoutJobNestedInput
+}
+
+export type JobUncheckedUpdateWithoutLeadInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobType?: Prisma.StringFieldUpdateOperationsInput | string
+  jobSource?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  zipCode?: Prisma.StringFieldUpdateOperationsInput | string
+  area?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.StringFieldUpdateOperationsInput | string
+  startTime?: Prisma.StringFieldUpdateOperationsInput | string
+  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  technician?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventLogUncheckedUpdateManyWithoutJobNestedInput
+}
+
+export type JobUncheckedUpdateManyWithoutLeadInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
@@ -836,6 +1066,7 @@ export type JobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   createdAt?: boolean
   updatedAt?: boolean
   events?: boolean | Prisma.Job$eventsArgs<ExtArgs>
+  lead?: boolean | Prisma.LeadDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.JobCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["job"]>
 
@@ -860,6 +1091,7 @@ export type JobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  lead?: boolean | Prisma.LeadDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["job"]>
 
 export type JobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -883,6 +1115,7 @@ export type JobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  lead?: boolean | Prisma.LeadDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["job"]>
 
 export type JobSelectScalar = {
@@ -911,15 +1144,21 @@ export type JobSelectScalar = {
 export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "leadId" | "firstName" | "lastName" | "phone" | "email" | "jobType" | "jobSource" | "description" | "address" | "city" | "zipCode" | "area" | "startDate" | "startTime" | "endTime" | "technician" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
 export type JobInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   events?: boolean | Prisma.Job$eventsArgs<ExtArgs>
+  lead?: boolean | Prisma.LeadDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.JobCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type JobIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type JobIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type JobIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  lead?: boolean | Prisma.LeadDefaultArgs<ExtArgs>
+}
+export type JobIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  lead?: boolean | Prisma.LeadDefaultArgs<ExtArgs>
+}
 
 export type $JobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Job"
   objects: {
     events: Prisma.$EventLogPayload<ExtArgs>[]
+    lead: Prisma.$LeadPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1337,6 +1576,7 @@ readonly fields: JobFieldRefs;
 export interface Prisma__JobClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   events<T extends Prisma.Job$eventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Job$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  lead<T extends Prisma.LeadDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LeadDefaultArgs<ExtArgs>>): Prisma.Prisma__LeadClient<runtime.Types.Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1620,6 +1860,7 @@ export type JobCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * The data used to create many Jobs.
    */
   data: Prisma.JobCreateManyInput | Prisma.JobCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1638,6 +1879,11 @@ export type JobCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.
    * The data used to create many Jobs.
    */
   data: Prisma.JobCreateManyInput | Prisma.JobCreateManyInput[]
+  skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1708,6 +1954,10 @@ export type JobUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many Jobs to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
