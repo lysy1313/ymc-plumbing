@@ -17,12 +17,6 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #64748b transparent;
-}
-
 body {
   background: var(--background);
   color: var(--foreground);

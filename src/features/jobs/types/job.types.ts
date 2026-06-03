@@ -1,3 +1,5 @@
+import { EventLogItem } from "@/features/event-log/types/event-log.types";
+
 export const JOB_STATUSES = {
   JOB_CREATED: "JOB_CREATED",
   SCHEDULED: "SCHEDULED",
@@ -37,3 +39,24 @@ export const TECHNICIANS = [
   "Alex Brown",
   "David Wilson",
 ] as const;
+
+export type Job = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email?: string | null;
+  jobType: string;
+  jobSource?: string;
+  description?: string | null;
+  address: string;
+  city: string;
+  zipCode?: string;
+  area?: string | null;
+  startDate: string;
+  startTime: string;
+  endTime: string;
+  technician: string;
+  status: JobStatus;
+  events: EventLogItem[];
+};

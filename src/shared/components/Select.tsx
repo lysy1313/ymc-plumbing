@@ -1,6 +1,6 @@
 import { SelectHTMLAttributes } from "react";
 
-type AppSelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
+type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
   label: string;
   error?: string;
   options: readonly string[];
@@ -12,8 +12,8 @@ export function Select({
   options,
   className = "",
   ...props
-}: AppSelectProps) {
-  const inputBorderClass = error
+}: SelectProps) {
+  const selectBorderClass = error
     ? "border-red-500 focus:border-red-500 focus:ring-red-100"
     : "border-slate-300 focus:border-cyan-600 focus:ring-cyan-100";
 
@@ -23,7 +23,7 @@ export function Select({
         {label}
       </span>
       <select
-        className={`w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-cyan-600 text-black ${inputBorderClass} ${className}`}
+        className={`w-full rounded-lg border px-3 py-2 text-sm text-black outline-none transition focus:ring-2 ${selectBorderClass} ${className}`}
         {...props}
       >
         <option value="">Select...</option>

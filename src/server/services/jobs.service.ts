@@ -1,13 +1,16 @@
-import { createJobSchema } from "@/features/jobs/schemas/job.schema";
-import {
-  JOB_STATUS_LABELS,
-  JOB_STATUSES,
-} from "@/features/jobs/types/job.types";
-import { prisma } from "@/server/db/prisma";
 import { z } from "zod";
+import { createJobSchema } from "@/features/jobs/schemas/job.schema";
+import { JOB_STATUSES, type JobStatus } from "@/features/jobs/types/job.types";
+import { prisma } from "@/server/db/prisma";
+import { runJobAutomations } from "@/server/services/automation.service";
 
-export async function getJobs() {
+export async function getJobs(params?: { leadId?: string }) {
   return prisma.job.findMany({
+    where: params?.leadId
+      ? {
+          leadId: params.leadId,
+        }
+      : undefined,
     orderBy: {
       createdAt: "desc",
     },
@@ -24,8 +27,8 @@ export async function getJobs() {
 export async function createJob(input: unknown) {
   const data = createJobSchema.parse(input);
 
-  return prisma.$transaction(async (tx) => {
-    const job = await tx.job.create({
+  const job = await prisma.$transaction(async (tx) => {
+    const createdJob = await tx.job.create({
       data: {
         ...data,
         email: data.email || null,
@@ -35,16 +38,34 @@ export async function createJob(input: unknown) {
 
     await tx.eventLog.create({
       data: {
-        jobId: job.id,
+        jobId: createdJob.id,
         type: "JOB_CREATED",
-        message: `Job created — ${job.firstName} ${job.lastName} — ${job.jobType}`,
+        message: `Job created — ${createdJob.firstName} ${createdJob.lastName} — ${createdJob.jobType}`,
         status: "SUCCESS",
       },
     });
 
-    return job;
+    return createdJob;
   });
+
+  const automationResults = await runJobAutomations({
+    action: "JOB_CREATED",
+    job,
+  });
+
+  return {
+    job,
+    automationResults,
+  };
 }
+
+const ALLOWED_STATUS_TRANSITIONS: Record<JobStatus, JobStatus[]> = {
+  JOB_CREATED: [JOB_STATUSES.SCHEDULED, JOB_STATUSES.LOST_CANCELLED],
+  SCHEDULED: [JOB_STATUSES.IN_PROGRESS, JOB_STATUSES.LOST_CANCELLED],
+  IN_PROGRESS: [JOB_STATUSES.COMPLETED, JOB_STATUSES.LOST_CANCELLED],
+  COMPLETED: [],
+  LOST_CANCELLED: [],
+};
 
 export const updateJobStatusSchema = z.object({
   status: z.enum([
@@ -60,27 +81,53 @@ export const updateJobStatusSchema = z.object({
 export async function updateJobStatus(jobId: string, input: unknown) {
   const data = updateJobStatusSchema.parse(input);
 
-  return prisma.$transaction(async (tx) => {
-    const job = await tx.job.update({
+  const existingJob = await prisma.job.findUnique({
+    where: {
+      id: jobId,
+    },
+  });
+
+  if (!existingJob) {
+    throw new Error("JOB_NOT_FOUND");
+  }
+
+  const currentStatus = existingJob.status as JobStatus;
+  const nextStatus = data.status;
+  const allowedNextStatuses = ALLOWED_STATUS_TRANSITIONS[currentStatus] ?? [];
+
+  if (!allowedNextStatuses.includes(nextStatus)) {
+    throw new Error("INVALID_STATUS_TRANSITION");
+  }
+
+  const job = await prisma.$transaction(async (tx) => {
+    const updatedJob = await tx.job.update({
       where: {
         id: jobId,
       },
       data: {
-        status: data.status,
+        status: nextStatus,
       },
     });
 
     await tx.eventLog.create({
       data: {
-        jobId: job.id,
+        jobId: updatedJob.id,
         type: "STATUS_CHANGED",
-        message: `Status changed — ${JOB_STATUS_LABELS[data.status]}${
-          data.note ? ` — ${data.note}` : ""
-        }`,
+        message: `Status changed — ${nextStatus}${data.note ? ` — ${data.note}` : ""}`,
         status: "SUCCESS",
       },
     });
 
-    return job;
+    return updatedJob;
   });
+
+  const automationResults = await runJobAutomations({
+    action: "STATUS_CHANGED",
+    job,
+  });
+
+  return {
+    job,
+    automationResults,
+  };
 }

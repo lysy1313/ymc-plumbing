@@ -404,6 +404,7 @@ export type EventLogCreateOrConnectWithoutJobInput = {
 
 export type EventLogCreateManyJobInputEnvelope = {
   data: Prisma.EventLogCreateManyJobInput | Prisma.EventLogCreateManyJobInput[]
+  skipDuplicates?: boolean
 }
 
 export type EventLogUpsertWithWhereUniqueWithoutJobInput = {
@@ -1194,6 +1195,7 @@ export type EventLogCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data used to create many EventLogs.
    */
   data: Prisma.EventLogCreateManyInput | Prisma.EventLogCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1212,6 +1214,7 @@ export type EventLogCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * The data used to create many EventLogs.
    */
   data: Prisma.EventLogCreateManyInput | Prisma.EventLogCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

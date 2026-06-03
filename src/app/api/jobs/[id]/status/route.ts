@@ -13,10 +13,11 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     const { id } = await params;
     const body = await request.json();
 
-    const job = await updateJobStatus(id, body);
+    const result = await updateJobStatus(id, body);
 
     return NextResponse.json({
-      job,
+      job: result.job,
+      automationResults: result.automationResults,
       message: "Status updated successfully",
     });
   } catch (error) {
@@ -25,6 +26,31 @@ export async function PATCH(request: Request, { params }: RouteParams) {
         {
           message: "Validation error",
           errors: error.flatten().fieldErrors,
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    if (error instanceof Error && error.message === "JOB_NOT_FOUND") {
+      return NextResponse.json(
+        {
+          message: "Job was not found",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
+
+    if (
+      error instanceof Error &&
+      error.message === "INVALID_STATUS_TRANSITION"
+    ) {
+      return NextResponse.json(
+        {
+          message: "Invalid status transition",
         },
         {
           status: 400,

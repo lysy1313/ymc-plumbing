@@ -4,7 +4,29 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
+}
+
+model Lead {
+  id String @id @default(cuid())
+
+  firstName String
+  lastName  String
+  phone     String
+  email     String?
+
+  source String
+  issue  String
+
+  address String
+  city    String
+  zipCode String
+  area    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  jobs Job[]
 }
 
 model Job {
@@ -37,6 +59,7 @@ model Job {
   updatedAt DateTime @updatedAt
 
   events EventLog[]
+  lead   Lead       @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@index([leadId])
   @@index([status])
