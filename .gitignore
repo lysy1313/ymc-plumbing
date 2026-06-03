@@ -35,7 +35,11 @@ pnpm-debug.log*
 # keep example env
 !.env.example
 
-# prisma / sqlite local database
+# sqlite database files
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
 prisma/*.db
 prisma/*.db-journal
 prisma/*.db-shm
@@ -46,4 +50,4 @@ prisma/*.db-wal
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
+/.vscode

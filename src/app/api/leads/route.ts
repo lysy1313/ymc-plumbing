@@ -1,23 +1,18 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
-import { createJob, getJobs } from "@/server/services/jobs.service";
+import { createLead, getLeads } from "@/server/services/leads.service";
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url);
-    const leadId = searchParams.get("leadId") ?? undefined;
-
-    const jobs = await getJobs({
-      leadId,
-    });
+    const leads = await getLeads();
 
     return NextResponse.json({
-      jobs,
+      leads,
     });
   } catch {
     return NextResponse.json(
       {
-        message: "Failed to load jobs",
+        message: "Failed to load leads",
       },
       {
         status: 500,
@@ -29,13 +24,12 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const result = await createJob(body);
+    const lead = await createLead(body);
 
     return NextResponse.json(
       {
-        job: result.job,
-        automationResults: result.automationResults,
-        message: "Job created successfully",
+        lead,
+        message: "Lead created successfully",
       },
       {
         status: 201,
@@ -56,7 +50,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        message: "Failed to create job",
+        message: "Failed to create lead",
       },
       {
         status: 500,
