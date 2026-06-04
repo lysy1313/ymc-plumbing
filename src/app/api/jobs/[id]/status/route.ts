@@ -1,6 +1,6 @@
+import { updateJobStatus } from "@/server/services/jobs.service";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
-import { updateJobStatus } from "@/server/services/jobs.service";
 
 type RouteParams = {
   params: Promise<{

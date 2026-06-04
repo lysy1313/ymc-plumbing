@@ -705,6 +705,7 @@ export const JobScalarFieldEnum = {
   endTime: 'endTime',
   technician: 'technician',
   status: 'status',
+  cancellationReason: 'cancellationReason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

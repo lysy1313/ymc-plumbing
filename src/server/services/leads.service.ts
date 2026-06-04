@@ -19,6 +19,19 @@ export async function getLeads() {
 export async function createLead(input: unknown) {
   const data = createLeadSchema.parse(input);
 
+  const existingLead = await prisma.lead.findFirst({
+    where: {
+      OR: [
+        { phone: data.phone },
+        ...(data.email ? [{ email: data.email }] : []),
+      ],
+    },
+  });
+
+  if (existingLead) {
+    throw new Error("DUPLICATE_LEAD");
+  }
+
   return prisma.lead.create({
     data: {
       ...data,

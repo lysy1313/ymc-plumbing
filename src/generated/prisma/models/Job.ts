@@ -43,6 +43,7 @@ export type JobMinAggregateOutputType = {
   endTime: string | null
   technician: string | null
   status: string | null
+  cancellationReason: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -66,6 +67,7 @@ export type JobMaxAggregateOutputType = {
   endTime: string | null
   technician: string | null
   status: string | null
+  cancellationReason: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -89,6 +91,7 @@ export type JobCountAggregateOutputType = {
   endTime: number
   technician: number
   status: number
+  cancellationReason: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -114,6 +117,7 @@ export type JobMinAggregateInputType = {
   endTime?: true
   technician?: true
   status?: true
+  cancellationReason?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -137,6 +141,7 @@ export type JobMaxAggregateInputType = {
   endTime?: true
   technician?: true
   status?: true
+  cancellationReason?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -160,6 +165,7 @@ export type JobCountAggregateInputType = {
   endTime?: true
   technician?: true
   status?: true
+  cancellationReason?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -256,6 +262,7 @@ export type JobGroupByOutputType = {
   endTime: string
   technician: string
   status: string
+  cancellationReason: string | null
   createdAt: Date
   updatedAt: Date
   _count: JobCountAggregateOutputType | null
@@ -300,6 +307,7 @@ export type JobWhereInput = {
   endTime?: Prisma.StringFilter<"Job"> | string
   technician?: Prisma.StringFilter<"Job"> | string
   status?: Prisma.StringFilter<"Job"> | string
+  cancellationReason?: Prisma.StringNullableFilter<"Job"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Job"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Job"> | Date | string
   events?: Prisma.EventLogListRelationFilter
@@ -325,6 +333,7 @@ export type JobOrderByWithRelationInput = {
   endTime?: Prisma.SortOrder
   technician?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  cancellationReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   events?: Prisma.EventLogOrderByRelationAggregateInput
@@ -353,6 +362,7 @@ export type JobWhereUniqueInput = Prisma.AtLeast<{
   endTime?: Prisma.StringFilter<"Job"> | string
   technician?: Prisma.StringFilter<"Job"> | string
   status?: Prisma.StringFilter<"Job"> | string
+  cancellationReason?: Prisma.StringNullableFilter<"Job"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Job"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Job"> | Date | string
   events?: Prisma.EventLogListRelationFilter
@@ -378,6 +388,7 @@ export type JobOrderByWithAggregationInput = {
   endTime?: Prisma.SortOrder
   technician?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  cancellationReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.JobCountOrderByAggregateInput
@@ -407,6 +418,7 @@ export type JobScalarWhereWithAggregatesInput = {
   endTime?: Prisma.StringWithAggregatesFilter<"Job"> | string
   technician?: Prisma.StringWithAggregatesFilter<"Job"> | string
   status?: Prisma.StringWithAggregatesFilter<"Job"> | string
+  cancellationReason?: Prisma.StringNullableWithAggregatesFilter<"Job"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Job"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Job"> | Date | string
 }
@@ -429,6 +441,7 @@ export type JobCreateInput = {
   endTime: string
   technician: string
   status?: string
+  cancellationReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventLogCreateNestedManyWithoutJobInput
@@ -454,6 +467,7 @@ export type JobUncheckedCreateInput = {
   endTime: string
   technician: string
   status?: string
+  cancellationReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventLogUncheckedCreateNestedManyWithoutJobInput
@@ -477,6 +491,7 @@ export type JobUpdateInput = {
   endTime?: Prisma.StringFieldUpdateOperationsInput | string
   technician?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventLogUpdateManyWithoutJobNestedInput
@@ -502,6 +517,7 @@ export type JobUncheckedUpdateInput = {
   endTime?: Prisma.StringFieldUpdateOperationsInput | string
   technician?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventLogUncheckedUpdateManyWithoutJobNestedInput
@@ -526,6 +542,7 @@ export type JobCreateManyInput = {
   endTime: string
   technician: string
   status?: string
+  cancellationReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -548,6 +565,7 @@ export type JobUpdateManyMutationInput = {
   endTime?: Prisma.StringFieldUpdateOperationsInput | string
   technician?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -571,6 +589,7 @@ export type JobUncheckedUpdateManyInput = {
   endTime?: Prisma.StringFieldUpdateOperationsInput | string
   technician?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -604,6 +623,7 @@ export type JobCountOrderByAggregateInput = {
   endTime?: Prisma.SortOrder
   technician?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  cancellationReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -627,6 +647,7 @@ export type JobMaxOrderByAggregateInput = {
   endTime?: Prisma.SortOrder
   technician?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  cancellationReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -650,6 +671,7 @@ export type JobMinOrderByAggregateInput = {
   endTime?: Prisma.SortOrder
   technician?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  cancellationReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -735,6 +757,7 @@ export type JobCreateWithoutLeadInput = {
   endTime: string
   technician: string
   status?: string
+  cancellationReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventLogCreateNestedManyWithoutJobInput
@@ -758,6 +781,7 @@ export type JobUncheckedCreateWithoutLeadInput = {
   endTime: string
   technician: string
   status?: string
+  cancellationReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventLogUncheckedCreateNestedManyWithoutJobInput
@@ -811,6 +835,7 @@ export type JobScalarWhereInput = {
   endTime?: Prisma.StringFilter<"Job"> | string
   technician?: Prisma.StringFilter<"Job"> | string
   status?: Prisma.StringFilter<"Job"> | string
+  cancellationReason?: Prisma.StringNullableFilter<"Job"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Job"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Job"> | Date | string
 }
@@ -833,6 +858,7 @@ export type JobCreateWithoutEventsInput = {
   endTime: string
   technician: string
   status?: string
+  cancellationReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   lead: Prisma.LeadCreateNestedOneWithoutJobsInput
@@ -857,6 +883,7 @@ export type JobUncheckedCreateWithoutEventsInput = {
   endTime: string
   technician: string
   status?: string
+  cancellationReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -895,6 +922,7 @@ export type JobUpdateWithoutEventsInput = {
   endTime?: Prisma.StringFieldUpdateOperationsInput | string
   technician?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lead?: Prisma.LeadUpdateOneRequiredWithoutJobsNestedInput
@@ -919,6 +947,7 @@ export type JobUncheckedUpdateWithoutEventsInput = {
   endTime?: Prisma.StringFieldUpdateOperationsInput | string
   technician?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -941,6 +970,7 @@ export type JobCreateManyLeadInput = {
   endTime: string
   technician: string
   status?: string
+  cancellationReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -963,6 +993,7 @@ export type JobUpdateWithoutLeadInput = {
   endTime?: Prisma.StringFieldUpdateOperationsInput | string
   technician?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventLogUpdateManyWithoutJobNestedInput
@@ -986,6 +1017,7 @@ export type JobUncheckedUpdateWithoutLeadInput = {
   endTime?: Prisma.StringFieldUpdateOperationsInput | string
   technician?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventLogUncheckedUpdateManyWithoutJobNestedInput
@@ -1009,6 +1041,7 @@ export type JobUncheckedUpdateManyWithoutLeadInput = {
   endTime?: Prisma.StringFieldUpdateOperationsInput | string
   technician?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1063,6 +1096,7 @@ export type JobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   endTime?: boolean
   technician?: boolean
   status?: boolean
+  cancellationReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   events?: boolean | Prisma.Job$eventsArgs<ExtArgs>
@@ -1089,6 +1123,7 @@ export type JobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   endTime?: boolean
   technician?: boolean
   status?: boolean
+  cancellationReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   lead?: boolean | Prisma.LeadDefaultArgs<ExtArgs>
@@ -1113,6 +1148,7 @@ export type JobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   endTime?: boolean
   technician?: boolean
   status?: boolean
+  cancellationReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   lead?: boolean | Prisma.LeadDefaultArgs<ExtArgs>
@@ -1137,11 +1173,12 @@ export type JobSelectScalar = {
   endTime?: boolean
   technician?: boolean
   status?: boolean
+  cancellationReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "leadId" | "firstName" | "lastName" | "phone" | "email" | "jobType" | "jobSource" | "description" | "address" | "city" | "zipCode" | "area" | "startDate" | "startTime" | "endTime" | "technician" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
+export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "leadId" | "firstName" | "lastName" | "phone" | "email" | "jobType" | "jobSource" | "description" | "address" | "city" | "zipCode" | "area" | "startDate" | "startTime" | "endTime" | "technician" | "status" | "cancellationReason" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
 export type JobInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   events?: boolean | Prisma.Job$eventsArgs<ExtArgs>
   lead?: boolean | Prisma.LeadDefaultArgs<ExtArgs>
@@ -1179,6 +1216,7 @@ export type $JobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     endTime: string
     technician: string
     status: string
+    cancellationReason: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["job"]>
@@ -1624,6 +1662,7 @@ export interface JobFieldRefs {
   readonly endTime: Prisma.FieldRef<"Job", 'String'>
   readonly technician: Prisma.FieldRef<"Job", 'String'>
   readonly status: Prisma.FieldRef<"Job", 'String'>
+  readonly cancellationReason: Prisma.FieldRef<"Job", 'String'>
   readonly createdAt: Prisma.FieldRef<"Job", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Job", 'DateTime'>
 }

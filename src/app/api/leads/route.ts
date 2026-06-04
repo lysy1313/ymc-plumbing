@@ -48,6 +48,17 @@ export async function POST(request: Request) {
       );
     }
 
+    if (error instanceof Error && error.message === "DUPLICATE_LEAD") {
+      return NextResponse.json(
+        {
+          message: "A lead with this phone or email already exists",
+        },
+        {
+          status: 409,
+        },
+      );
+    }
+
     return NextResponse.json(
       {
         message: "Failed to create lead",

@@ -53,7 +53,8 @@ model Job {
   endTime    String
   technician String
 
-  status String @default("JOB_CREATED")
+  status             String  @default("JOB_CREATED")
+  cancellationReason String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -8,6 +8,10 @@ import { DashboardModals } from "./DashboardModals";
 import { DashboardAlerts } from "./DashboardAlerts";
 import { JobsPanel } from "./JobsPanel";
 import { useCrmDashboard } from "../hooks/useCrmDashboard";
+import { LeadsListSkeleton } from "@/features/leads/components/LeadsListSkeleton";
+import { LeadDetailsSkeleton } from "@/features/leads/components/LeadDetailsSkeleton";
+import { EventLogSkeleton } from "@/features/event-log/components/EventLogSkeleton";
+import { JobsPanelSkeleton } from "@/features/jobs/components/JobsPanelSkeleton";
 
 export function CrmDashboard() {
   const dashboard = useCrmDashboard();
@@ -27,9 +31,7 @@ export function CrmDashboard() {
           ) : null}
 
           {dashboard.isLoadingLeads ? (
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-500">
-              Loading leads...
-            </div>
+            <LeadsListSkeleton />
           ) : (
             <LeadsList
               leads={dashboard.leads}
@@ -41,10 +43,14 @@ export function CrmDashboard() {
         </div>
 
         <div className="space-y-6">
-          <LeadDetailsCard
-            lead={dashboard.selectedLead}
-            onCreateJob={() => dashboard.setIsCreateJobOpen(true)}
-          />
+          {dashboard.isLoadingLeads ? (
+            <LeadDetailsSkeleton />
+          ) : (
+            <LeadDetailsCard
+              lead={dashboard.selectedLead}
+              onCreateJob={() => dashboard.setIsCreateJobOpen(true)}
+            />
+          )}
 
           <DashboardAlerts
             actionMessage={dashboard.actionMessage}
@@ -52,17 +58,26 @@ export function CrmDashboard() {
             jobsError={dashboard.jobsError}
           />
 
-          <JobsPanel
-            selectedLead={dashboard.selectedLead}
-            jobs={dashboard.jobs}
-            isLoadingJobs={dashboard.isLoadingJobs}
-            updatingJobId={dashboard.updatingJobId}
-            onChangeStatus={dashboard.handleStatusChange}
-          />
+          {dashboard.isLoadingJobs ? (
+            <JobsPanelSkeleton />
+          ) : (
+            <JobsPanel
+              selectedLead={dashboard.selectedLead}
+              jobs={dashboard.jobs}
+              isLoadingJobs={dashboard.isLoadingJobs}
+              updatingJobId={dashboard.updatingJobId}
+              onChangeStatus={dashboard.handleStatusChange}
+              onDeleteJob={dashboard.handleDeleteJob}
+            />
+          )}
         </div>
 
         <aside className="min-w-0">
-          <EventLog events={dashboard.allEvents} />
+          {dashboard.isLoadingJobs ? (
+            <EventLogSkeleton />
+          ) : (
+            <EventLog events={dashboard.allEvents} />
+          )}
         </aside>
       </section>
     </main>
