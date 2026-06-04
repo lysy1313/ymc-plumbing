@@ -7,6 +7,7 @@
     "build": "prisma generate && prisma migrate deploy && next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "vitest run",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
@@ -23,6 +24,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-hook-form": "7.77.0",
+    "sonner": "^2.0.7",
     "zod": "4.4.3"
   },
   "devDependencies": {
@@ -33,6 +35,7 @@
     "eslint": "9",
     "eslint-config-next": "16.2.7",
     "tailwindcss": "4",
-    "typescript": "5"
+    "typescript": "5",
+    "vitest": "^4.1.8"
   }
 }

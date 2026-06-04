@@ -58,5 +58,6 @@ export type Job = {
   endTime: string;
   technician: string;
   status: JobStatus;
+  cancellationReason?: string | null;
   events: EventLogItem[];
 };

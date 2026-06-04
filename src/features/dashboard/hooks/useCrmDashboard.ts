@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { type JobStatus } from "@/features/jobs/types/job.types";
 import { type Lead } from "@/features/leads/types/lead.types";
 import { type Job } from "@/features/jobs/types/job.types";
+import { toast } from "sonner";
 
 export function useCrmDashboard() {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -143,10 +144,16 @@ export function useCrmDashboard() {
     await loadJobs(leadId);
   }
 
-  async function handleStatusChange(jobId: string, status: JobStatus) {
+  async function handleStatusChange(
+    jobId: string,
+    status: JobStatus,
+    cancellationReason?: string,
+  ) {
     setUpdatingJobId(jobId);
     setActionMessage(null);
     setActionError(null);
+
+    const toastId = toast.loading("Updating job status...");
 
     try {
       const response = await fetch(`/api/jobs/${jobId}/status`, {
@@ -154,17 +161,88 @@ export function useCrmDashboard() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({
+          status,
+          cancellationReason,
+        }),
       });
 
+      const data = await response.json().catch(() => null);
+
       if (!response.ok) {
-        throw new Error("Failed to update job status");
+        throw new Error(data?.message ?? "Failed to update job status");
       }
+
+      toast.success("Status updated and automations triggered.", {
+        id: toastId,
+      });
 
       setActionMessage("Status updated and automations were triggered.");
       await loadJobs(selectedLeadId);
-    } catch {
-      setActionError("Failed to update status. Please try again.");
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to update status. Please try again.";
+
+      toast.error(message, {
+        id: toastId,
+      });
+
+      setActionError(message);
+    } finally {
+      setUpdatingJobId(null);
+    }
+  }
+
+  async function handleDeleteJob(jobId: string) {
+    setUpdatingJobId(jobId);
+    setActionMessage(null);
+    setActionError(null);
+
+    const toastId = toast.loading("Deleting job...");
+
+    try {
+      const response = await fetch(`/api/jobs/${jobId}`, {
+        method: "DELETE",
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(data?.message ?? "Failed to delete job");
+      }
+
+      const sheetsOk = data?.googleSheetsResult?.ok;
+
+      toast.success(
+        sheetsOk
+          ? "Job deleted from database and Google Sheets."
+          : "Job deleted from database. Google Sheets sync was skipped or failed.",
+        {
+          id: toastId,
+        },
+      );
+
+      setActionMessage(
+        sheetsOk
+          ? "Job deleted from database and Google Sheets."
+          : "Job deleted from database. Google Sheets sync was skipped or failed.",
+      );
+
+      await loadJobs(selectedLeadId);
+      await loadLeads();
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to delete job. Please try again.";
+
+      toast.error(message, {
+        id: toastId,
+      });
+
+      setActionError(message);
     } finally {
       setUpdatingJobId(null);
     }
@@ -197,6 +275,7 @@ export function useCrmDashboard() {
     setSelectedLeadId,
     setActionMessage,
     setActionError,
+    handleDeleteJob,
 
     handleSelectLead,
     handleStatusChange,

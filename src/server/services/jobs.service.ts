@@ -3,6 +3,14 @@ import { createJobSchema } from "@/features/jobs/schemas/job.schema";
 import { JOB_STATUSES, type JobStatus } from "@/features/jobs/types/job.types";
 import { prisma } from "@/server/db/prisma";
 import { runJobAutomations } from "@/server/services/automation.service";
+import { deleteJobFromGoogleSheets } from "./googleSheets.service";
+
+export class JobNotFoundError extends Error {
+  constructor() {
+    super("Job was not found");
+    this.name = "JobNotFoundError";
+  }
+}
 
 export async function getJobs(params?: { leadId?: string }) {
   return prisma.job.findMany({
@@ -67,16 +75,29 @@ const ALLOWED_STATUS_TRANSITIONS: Record<JobStatus, JobStatus[]> = {
   LOST_CANCELLED: [],
 };
 
-export const updateJobStatusSchema = z.object({
-  status: z.enum([
-    JOB_STATUSES.JOB_CREATED,
-    JOB_STATUSES.SCHEDULED,
-    JOB_STATUSES.IN_PROGRESS,
-    JOB_STATUSES.COMPLETED,
-    JOB_STATUSES.LOST_CANCELLED,
-  ]),
-  note: z.string().optional(),
-});
+export const updateJobStatusSchema = z
+  .object({
+    status: z.enum([
+      JOB_STATUSES.JOB_CREATED,
+      JOB_STATUSES.SCHEDULED,
+      JOB_STATUSES.IN_PROGRESS,
+      JOB_STATUSES.COMPLETED,
+      JOB_STATUSES.LOST_CANCELLED,
+    ]),
+    cancellationReason: z.string().trim().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.status === JOB_STATUSES.LOST_CANCELLED &&
+      !data.cancellationReason
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["cancellationReason"],
+        message: "Cancellation reason is required",
+      });
+    }
+  });
 
 export async function updateJobStatus(jobId: string, input: unknown) {
   const data = updateJobStatusSchema.parse(input);
@@ -100,12 +121,15 @@ export async function updateJobStatus(jobId: string, input: unknown) {
   }
 
   const job = await prisma.$transaction(async (tx) => {
+    const isCancelled = data.status === JOB_STATUSES.LOST_CANCELLED;
+
     const updatedJob = await tx.job.update({
       where: {
         id: jobId,
       },
       data: {
-        status: nextStatus,
+        status: data.status satisfies JobStatus,
+        cancellationReason: isCancelled ? data.cancellationReason : null,
       },
     });
 
@@ -113,7 +137,9 @@ export async function updateJobStatus(jobId: string, input: unknown) {
       data: {
         jobId: updatedJob.id,
         type: "STATUS_CHANGED",
-        message: `Status changed — ${nextStatus}${data.note ? ` — ${data.note}` : ""}`,
+        message: isCancelled
+          ? `Status changed — ${data.status} — Reason: ${data.cancellationReason}`
+          : `Status changed — ${data.status}`,
         status: "SUCCESS",
       },
     });
@@ -129,5 +155,30 @@ export async function updateJobStatus(jobId: string, input: unknown) {
   return {
     job,
     automationResults,
+  };
+}
+
+export async function deleteJob(jobId: string) {
+  const job = await prisma.job.findUnique({
+    where: {
+      id: jobId,
+    },
+  });
+
+  if (!job) {
+    throw new JobNotFoundError();
+  }
+
+  await prisma.job.delete({
+    where: {
+      id: jobId,
+    },
+  });
+
+  const googleSheetsResult = await deleteJobFromGoogleSheets(jobId);
+
+  return {
+    job,
+    googleSheetsResult,
   };
 }

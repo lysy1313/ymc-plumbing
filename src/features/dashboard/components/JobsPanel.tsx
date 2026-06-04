@@ -7,7 +7,12 @@ type JobsPanelProps = {
   jobs: Job[];
   isLoadingJobs: boolean;
   updatingJobId: string | null;
-  onChangeStatus: (jobId: string, status: JobStatus) => void;
+  onChangeStatus: (
+    jobId: string,
+    status: JobStatus,
+    cancellationReason?: string,
+  ) => Promise<void>;
+  onDeleteJob: (jobId: string) => Promise<void>;
 };
 
 export function JobsPanel({
@@ -16,6 +21,7 @@ export function JobsPanel({
   isLoadingJobs,
   updatingJobId,
   onChangeStatus,
+  onDeleteJob,
 }: JobsPanelProps) {
   return (
     <div>
@@ -50,6 +56,7 @@ export function JobsPanel({
               job={job}
               isUpdating={updatingJobId === job.id}
               onChangeStatus={onChangeStatus}
+              onDeleteJob={onDeleteJob}
             />
           ))}
         </div>
